@@ -1,0 +1,108 @@
+{
+  "name": "dropship",
+  "version": "0.1.1",
+  "private": true,
+  "author": "NuclearPowered",
+  "description": "Mod installer and server manager for Among Us",
+  "repository": "https://github.com/NuclearPowered/Dropship",
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "clean": "rimraf dist_electron",
+    "electron:build": "vue-cli-service electron:build -p onTag",
+    "electron:build:xplat": "vue-cli-service electron:build --linux AppImage --win nsis -p onTag",
+    "electron:serve": "vue-cli-service electron:serve",
+    "electron:generate-icons": "electron-icon-builder --input=./public/icon.png --output=build --flatten",
+    "postinstall": "electron-builder install-app-deps",
+    "postuninstall": "electron-builder install-app-deps"
+  },
+  "main": "background.js",
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.1",
+    "@node-steam/vdf": "^2.1.0",
+    "@nuclearpowered/dropship-native-addon": "^0.1.1",
+    "adm-zip": "^0.4.16",
+    "axios": "^0.21.0",
+    "bootstrap": "5.0.0-alpha2",
+    "chokidar": "^3.4.3",
+    "core-js": "^3.6.5",
+    "electron-updater": "^4.3.5",
+    "jwt-decode": "^3.0.0",
+    "lodash": "^4.17.20",
+    "registry-js": "^1.12.0",
+    "semver": "^7.3.4",
+    "vee-validate": "^3.4.3",
+    "vue": "^2.6.11",
+    "vue-class-component": "^7.2.3",
+    "vue-infinite-scroll": "^2.0.2",
+    "vue-property-decorator": "^8.4.2",
+    "vue-router": "^3.2.0",
+    "vuex": "^3.4.0",
+    "vuex-persistedstate": "^4.0.0-beta.1"
+  },
+  "optionalDependencies": {
+    "fsevents": "^2.2.1"
+  },
+  "devDependencies": {
+    "@types/adm-zip": "^0.4.33",
+    "@types/electron-devtools-installer": "^2.2.0",
+    "@types/lodash": "^4.14.166",
+    "@types/semver": "^7.3.4",
+    "@typescript-eslint/eslint-plugin": "^2.33.0",
+    "@typescript-eslint/parser": "^2.33.0",
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-plugin-router": "~4.5.0",
+    "@vue/cli-plugin-typescript": "~4.5.0",
+    "@vue/cli-plugin-vuex": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "@vue/eslint-config-standard": "^5.1.2",
+    "@vue/eslint-config-typescript": "^5.0.2",
+    "electron": "^9.0.0",
+    "electron-devtools-installer": "^3.1.0",
+    "electron-icon-builder": "^2.0.1",
+    "eslint": "^6.7.2",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "eslint-plugin-vue": "^6.2.2",
+    "lint-staged": "^9.5.0",
+    "rimraf": "^3.0.2",
+    "stylus": "^0.54.7",
+    "stylus-loader": "^3.0.2",
+    "typescript": "~3.9.3",
+    "vue-cli-plugin-electron-builder": "~2.0.0-rc.5",
+    "vue-template-compiler": "^2.6.11"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "@vue/standard",
+      "@vue/typescript/recommended"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 2020
+    },
+    "rules": {}
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,jsx,vue,ts,tsx}": [
+      "vue-cli-service lint",
+      "git add"
+    ]
+  }
+}
