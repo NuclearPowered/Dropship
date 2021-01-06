@@ -1,6 +1,6 @@
 {
   "name": "dropship",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "author": "NuclearPowered",
   "description": "Mod installer and server manager for Among Us",
@@ -21,7 +21,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.1",
     "@node-steam/vdf": "^2.1.0",
-    "@nuclearpowered/dropship-native-addon": "^0.1.1",
+    "@nuclearpowered/dropship-native-addon": "^0.1.2",
     "adm-zip": "^0.4.16",
     "axios": "^0.21.0",
     "bootstrap": "5.0.0-alpha2",

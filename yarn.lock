@@ -1257,10 +1257,10 @@
   dependencies:
     mkdirp "^1.0.4"
 
-"@nuclearpowered/dropship-native-addon@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@nuclearpowered/dropship-native-addon/-/dropship-native-addon-0.1.1.tgz#1a7e191843ccaa5cbf42f4dceebcf24cc1120a83"
-  integrity sha512-TApGOM6sfysEXTHHBSdzjuEM9XjtMwzzJHNMZiSwZFulH2+VLS1OLfOrAJcobBYtZF/o2RYWIJuJkx2iNF0sYQ==
+"@nuclearpowered/dropship-native-addon@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@nuclearpowered/dropship-native-addon/-/dropship-native-addon-0.1.2.tgz#0cc117ece03cc57bf8e6031ae38841f7f1c8d09b"
+  integrity sha512-1xP0+eSzFvuuXROnPOQmJVcTWrBZY+2/dGckwhppDSrk9AG4HCX1I+2tWM719fccOmnnb0YPLnrBULu6BYyxwg==
   dependencies:
     bindings "^1.5.0"
     node-addon-api "^3.1.0"
