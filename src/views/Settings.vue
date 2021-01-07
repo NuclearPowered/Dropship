@@ -120,7 +120,7 @@ export default class Settings extends Vue {
 
   beforeRouteLeave (to: Route, from: Route, next: () => void) {
     this.saveLocation()
-    this.$store.dispatch('updateGameInstallInfo', {
+    this.$store.dispatch('updateGameLaunchInfo', {
       location: this.location,
       launchWrapper: this.launchWrapper,
       customExecLine: this.customExecLine
