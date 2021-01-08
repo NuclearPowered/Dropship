@@ -61,7 +61,7 @@ export default class InstalledModList extends Vue {
     await ModListService.removeModByGuidVer(event.footer.guid, event.footer.currentVersion as string)
   }
 
-  async mounted () {
+  async created () {
     try {
       await ModListService.startFileWatcher()
       ipcRenderer.on('file-added', async (event, args: ModMetadata) => {

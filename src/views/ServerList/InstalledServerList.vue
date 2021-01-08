@@ -63,7 +63,7 @@ export default class InstalledServerList extends Vue {
     )
   }
 
-  async mounted () {
+  async created () {
     await this.refresh()
   }
 

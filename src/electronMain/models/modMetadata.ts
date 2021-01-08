@@ -1,7 +1,8 @@
 /* eslint-disable */
 export default interface ModMetadata {
+  description: string;
+  authors: string;
   assemblyName: string;
-  assemblyVersion: string;
 
   id: string;
   name: string;

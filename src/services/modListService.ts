@@ -64,8 +64,8 @@ export default class ModListService {
       return {
         ...m,
         imageUrl: '',
-        creator: 'Creator unknown',
-        description: 'Description unknown'
+        creator: m.authors,
+        description: m.description
       }
     }
   }
