@@ -43,7 +43,7 @@
             <option :value="1">Standard</option>
             <option :value="2">Custom</option>
           </select>
-          <div v-if="launchWrapper === 3">
+          <div v-if="launchWrapper === 2">
             <ValidationProvider rules="required" v-slot="v">
               <label for="customExec" class="py-2">Location: </label>
               <input v-model="customExecLine" type="text" class="form-control" id="customExec" placeholder="Custom Exec Line">
