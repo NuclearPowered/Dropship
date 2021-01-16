@@ -60,7 +60,9 @@ export default class ElectronMain {
       console.log(data.toString())
     }
 
-    process.env.DOORSTOP_DISABLE = args.modded ? 'false' : 'true'
+    if (!args.modded) {
+      process.env.DOORSTOP_DISABLE = 'true'
+    }
     if (os.platform() === 'linux' || os.platform() === 'darwin') {
       process.env.WINEDLLOVERRIDES = 'winhttp=n,b'
     }
