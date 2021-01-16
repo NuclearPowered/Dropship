@@ -10,7 +10,7 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "clean": "rimraf dist_electron",
-    "electron:build": "vue-cli-service electron:build -p onTag",
+    "electron:build": "vue-cli-service electron:build -p always",
     "electron:build:xplat": "vue-cli-service electron:build --linux AppImage --win nsis -p always",
     "electron:serve": "vue-cli-service electron:serve",
     "electron:generate-icons": "electron-icon-builder --input=./public/icon.png --output=build --flatten",
