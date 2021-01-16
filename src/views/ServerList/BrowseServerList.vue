@@ -2,8 +2,14 @@
   <div class="container">
     <div class="row">
       <div class="row" v-infinite-scroll="loadMore" :infinite-scroll-disabled="busy">
-        <div v-for="(server, i) in serverList" :key="i" class="col-6 col-lg-4 mb-3">
-          <VServerCard :server-card="server" @action="addServer($event)" />
+        <div v-if="serverList.length > 0">
+          <div v-for="(server, i) in serverList" :key="i" class="col-6 col-lg-4 mb-3">
+            <VServerCard :server-card="server" @action="addServer($event)" />
+          </div>
+        </div>
+        <div class="d-flex justify-content-evenly" v-else>
+          <SkeletonCard class="p-3 col-6" />
+          <SkeletonCard class="p-3 col-6" />
         </div>
       </div>
     </div>
@@ -16,9 +22,10 @@ import { ServerCard, ServerCardIcon } from '@/models/cardViewModel'
 import ServerListService from '@/services/serverListService'
 import VServerCard from '@/components/VServerCard.vue'
 import { StoreServerModel } from '@/models/storeModel'
+import SkeletonCard from '@/components/SkeletonCard.vue'
 
 @Component({
-  components: { VServerCard }
+  components: { VServerCard, SkeletonCard }
 })
 export default class BrowseServerList extends Vue {
   serverList: ServerCard[] = [];

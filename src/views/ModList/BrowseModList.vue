@@ -5,16 +5,22 @@
                v-model="searchText" @input="searchEvent()">
     </section>
 
-    <div v-if="searchText.length !== 0" class="row">
+    <div v-if="searchText.length > 0" class="row">
       <div v-for="(mod, i) in searchModList" :key="i" class="col-6 col-lg-4 mb-3">
         <VModCard :mod-card="mod" @action="selectMod($event)"/>
       </div>
     </div>
     <div v-else>
       <div class="row" v-infinite-scroll="loadMore" :infinite-scroll-disabled="busy">
+        <div v-if="modList.length > 0">
           <div v-for="(mod, i) in modList" :key="i" class="col-6 col-lg-4 mb-3">
             <VModCard :mod-card="mod" @action="selectMod($event)"/>
           </div>
+        </div>
+        <div class="d-flex justify-content-evenly" v-else>
+          <SkeletonCard class="p-3 col-6" />
+          <SkeletonCard class="p-3 col-6" />
+        </div>
       </div>
     </div>
 
@@ -41,9 +47,10 @@ import VModBuildCard from '@/components/VModBuildCard.vue'
 import VModal from '@/components/VModal.vue'
 import ModDefault from '@/assets/icons/mod_default.png'
 import * as _ from 'lodash'
+import SkeletonCard from '@/components/SkeletonCard.vue'
 
 @Component({
-  components: { VModBuildCard, VModCard, VModal }
+  components: { SkeletonCard, VModBuildCard, VModCard, VModal }
 })
 export default class BrowseModList extends Vue {
   searchText = ''
