@@ -21,11 +21,12 @@ export default class UpdateService {
 
     for (const modUpdate of modUpdateResponses) {
       const oldModMetadata = modMetadata.find(mm => mm.id === modUpdate.guid)
-      if (!oldModMetadata) continue
-      // If we have an update. Remove the old mod, and download the new one.
-      if (semver.gt(modUpdate.modBuild.version, oldModMetadata!.version)) { // eslint-disable-line
-        await ModListService.removeModByGuidVer(oldModMetadata!.id, oldModMetadata!.version); // eslint-disable-line
-        await ModListService.downloadModByUrl(modUpdate.modBuild.downloadUrl, modUpdate.modBuild.fileName)
+      if (typeof oldModMetadata !== 'undefined') {
+        // If we have an update. Remove the old mod, and download the new one.
+        if (semver.gt(modUpdate.modBuild.version, oldModMetadata.version)) {
+          await ModListService.removeModByGuidVer(oldModMetadata.id, oldModMetadata.version)
+          await ModListService.downloadModByUrl(modUpdate.modBuild.downloadUrl, modUpdate.modBuild.fileName)
+        }
       }
     }
   }

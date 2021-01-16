@@ -5,8 +5,9 @@ module.exports = {
   pluginOptions: {
     electronBuilder: {
       nodeIntegration: true,
-      externals: ['registry-js', 'ffi-napi', 'ref-napi'],
+      externals: ['registry-js', '@nuclearpowered/dropship-native-addon'],
       builderOptions: {
+        appId: 'gg.nuclearpowered.dropship',
         publish: [
           {
             provider: 'github',
@@ -17,14 +18,7 @@ module.exports = {
         linux: {
           target: 'AppImage',
           category: 'Game'
-        },
-        extraResources: [
-          {
-            from: 'build/lib',
-            to: 'lib',
-            filter: ['*.so', '*.dll']
-          }
-        ]
+        }
       }
     }
   }

@@ -1,4 +1,4 @@
-import { ipcMain, IpcMainEvent } from 'electron'
+import { App, ipcMain, IpcMainEvent } from 'electron'
 import { exec } from 'child_process'
 import * as vdf from '@node-steam/vdf'
 import os from 'os'
@@ -18,12 +18,16 @@ import AdmZip, { IZipEntry } from 'adm-zip'
 import InstallBepinexArgs from '@/electronMain/models/installBepinexArgs'
 import * as dns from 'dns'
 import globby from 'globby'
+import { ELECTRON_APP_ID } from '@/consts'
 
 export default class ElectronMain {
   fileWatcher!: chokidar.FSWatcher;
 
-  constructor () {
+  constructor (app: App) {
     this.registerIPC()
+    if (process.platform === 'win32') {
+      app.setAppUserModelId(ELECTRON_APP_ID)
+    }
   }
 
   registerIPC () {
@@ -82,11 +86,11 @@ export default class ElectronMain {
         if (os.platform() === 'linux' || os.platform() === 'darwin') {
           exec(`wine "${path.join(args.location, 'Among Us.exe')} --doorstop-enable=${args.modded}"`, {
             cwd: args.location
-          }, launchCallback);
+          }, launchCallback)
         } else {
           exec(`"${path.join(args.location, 'Among Us.exe')} --doorstop-enable=${args.modded}"`, {
             cwd: args.location
-          }, launchCallback);
+          }, launchCallback)
         }
         break
       case LaunchWrapperType.Custom:

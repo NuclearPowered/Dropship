@@ -35,7 +35,7 @@ async function createWindow () {
 
   win.setMenuBarVisibility(false)
 
-  const electronMain = new ElectronMain()
+  const electronMain = new ElectronMain(app)
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
