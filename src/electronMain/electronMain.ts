@@ -47,6 +47,7 @@ export default class ElectronMain {
     ipcMain.on('start-file-watcher', async (event, location: string) => {
       await this.startFileWatcher(event, location)
     })
+    ipcMain.on('stop-file-watcher', this.stopFileWatcher)
     ipcMain.on('install-bepinex', this.installBepinex)
   }
 
@@ -84,13 +85,9 @@ export default class ElectronMain {
       }
       case LaunchWrapperType.Standard:
         if (os.platform() === 'linux' || os.platform() === 'darwin') {
-          exec(`wine "${path.join(args.location, 'Among Us.exe')} --doorstop-enable=${args.modded}"`, {
-            cwd: args.location
-          }, launchCallback)
+          exec(`wine "${path.join(args.location, 'Among Us.exe')}" --doorstop-enable=${true}`, launchCallback)
         } else {
-          exec(`"${path.join(args.location, 'Among Us.exe')} --doorstop-enable=${args.modded}"`, {
-            cwd: args.location
-          }, launchCallback)
+          exec(`${path.join(args.location, 'Among Us.exe')} --doorstop-enable=${args.modded}`, launchCallback)
         }
         break
       case LaunchWrapperType.Custom:
@@ -220,7 +217,7 @@ export default class ElectronMain {
         try {
           modMetadata.push(getModMetadata(modFile))
         } catch (e) {
-          console.warn(`Could not parse mod: ${modFile}, In plugin directory: ${location}/BepInEx/plugins`)
+          console.warn(`Could not parse mod: ${modFile}, In plugin directory: ${location}/BepInEx/plugins. Error: ${e}`)
         }
       }
       return modMetadata
@@ -253,7 +250,7 @@ export default class ElectronMain {
         try {
           event.reply('file-added', getModMetadata(modFile))
         } catch (e) {
-          console.warn(`Non mod .dll placed into mod directory (${modFile})`)
+          console.warn(`Non mod .dll placed into mod directory (${modFile}). Error: ${e}`)
         }
       })
       this.fileWatcher.on('unlink', modFile => event.reply('file-removed', modFile))

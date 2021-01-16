@@ -28,6 +28,7 @@
     "chokidar": "^3.4.3",
     "core-js": "^3.6.5",
     "electron-updater": "^4.3.5",
+    "hazardous": "^0.3.0",
     "jwt-decode": "^3.0.0",
     "lodash": "^4.17.20",
     "registry-js": "^1.12.0",

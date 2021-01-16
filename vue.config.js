@@ -5,7 +5,7 @@ module.exports = {
   pluginOptions: {
     electronBuilder: {
       nodeIntegration: true,
-      externals: ['registry-js', '@nuclearpowered/dropship-native-addon'],
+      externals: ['registry-js', 'bindings', 'node-addon-api', '@nuclearpowered/dropship-native-addon'],
       builderOptions: {
         appId: 'gg.nuclearpowered.dropship',
         publish: [
