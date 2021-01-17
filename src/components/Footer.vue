@@ -10,7 +10,10 @@
       <span class="text-white">Launch</span>
     </button>
     <div class="w-25 text-center">
-      <p style="height: fit-content">Dropship alpha</p>
+      <div class="task-container list-group" v-if="task !== undefined">
+        <TaskItem :task="task" />
+      </div>
+      <p style="height: fit-content" v-else>No background tasks</p>
     </div>
   </footer>
 </template>
@@ -18,11 +21,19 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import LauncherService from '@/services/launcherService'
+import { BackgroundTask } from '@/electronMain/models/backgroundTask'
+import TaskItem from '@/components/TaskItem'
 
-@Component({})
+@Component({
+  components: { TaskItem }
+})
 export default class Footer extends Vue {
   get username () {
     return this.$store.state.auth.username
+  }
+
+  get task (): BackgroundTask | undefined {
+    return this.$store.state.tasks[0]
   }
 
   launchModdedGame () {

@@ -1,6 +1,7 @@
 /* eslint-disable */
 
 import { LaunchWrapperType } from "@/electronMain/models/gameLaunchArgs";
+import { BackgroundTask } from "@/electronMain/models/backgroundTask";
 
 export default interface StoreModel {
   firstLaunch: boolean;
@@ -20,6 +21,7 @@ export default interface StoreModel {
     launchWrapper: LaunchWrapperType;
     customExecLine: string;
   };
+  tasks: BackgroundTask[];
 }
 
 export interface StoreServerModel {

@@ -4,6 +4,7 @@ import createPersistedState from 'vuex-persistedstate'
 import jwt_decode from "jwt-decode"; // eslint-disable-line
 import { LaunchWrapperType } from '@/electronMain/models/gameLaunchArgs'
 import StoreModel, { StoreServerModel } from '@/models/storeModel'
+import { BackgroundTask, TaskUpdate } from '@/electronMain/models/backgroundTask'
 
 Vue.use(Vuex)
 
@@ -25,7 +26,8 @@ const store = new Vuex.Store({
       location: 'AMONGUSDIR',
       launchWrapper: LaunchWrapperType.Standard,
       customExecLine: ''
-    }
+    },
+    tasks: []
   } as StoreModel,
   mutations: {
     login (state) {
@@ -33,6 +35,9 @@ const store = new Vuex.Store({
     },
     logout (state) {
       state.auth.loggedIn = false
+    },
+    addJwt (state, payload: string) {
+      state.auth.jwt = payload
     },
     removeJwt (state) {
       state.auth.jwt = ''
@@ -44,9 +49,6 @@ const store = new Vuex.Store({
     removeUserInfo (state) {
       state.auth.username = ''
       state.auth.userId = -1
-    },
-    addJwt (state, payload: string) {
-      state.auth.jwt = payload
     },
     updateFirstLaunch (state, payload: boolean) {
       state.firstLaunch = payload
@@ -74,6 +76,19 @@ const store = new Vuex.Store({
     },
     updateCustomExecLine (state, customExecLine: string) {
       state.gameInstallInfo.customExecLine = customExecLine
+    },
+    addTask (state, backgroundTask: BackgroundTask) {
+      state.tasks.push(backgroundTask)
+    },
+    removeTask (state, taskUuid) {
+      state.tasks = state.tasks.filter(t => t.uuid !== taskUuid)
+    },
+    processTaskUpdate (state, update: TaskUpdate) {
+      const task = state.tasks.find(t => t.uuid === update.uuid)
+      if (task) {
+        task.currentProgress = update.currentProgress
+        task.state = update.state
+      }
     }
   },
   actions: {
@@ -100,12 +115,19 @@ const store = new Vuex.Store({
                                                 customExecLine: string; }) {
       commit('updateLaunchWrapperType', payload.launchWrapper)
       commit('updateCustomExecLine', payload.customExecLine)
+    },
+    removeAllTasks ({ commit, state }) {
+      state.tasks.forEach(t => commit('removeTask', t.uuid))
     }
   },
   modules: {
   },
   plugins: [createPersistedState({
-    overwrite: true
+    overwrite: true,
+    filter (mutation) {
+      return ['addTask', 'removeTask', 'processTaskUpdate']
+        .every(x => x !== mutation.type)
+    }
   })]
 })
 

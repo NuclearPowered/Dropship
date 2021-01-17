@@ -22,6 +22,8 @@ import { Route } from 'vue-router'
 import { RouterLinkModel } from '@/models/routerLinkViewModel'
 import UpdateService from '@/services/updateService'
 import NotifImage from '@/assets/icons/icon.png'
+import { ipcRenderer } from 'electron'
+import { BackgroundTask, TaskState, TaskUpdate } from '@/electronMain/models/backgroundTask'
 
 @Component({
   components: { Footer, Header }
@@ -69,7 +71,7 @@ export default class App extends Vue {
     }
   }
 
-  async mounted () {
+  async created () {
     try {
       await UpdateService.updateBepinex()
       await UpdateService.checkModUpdates()
@@ -80,6 +82,19 @@ export default class App extends Vue {
         icon: NotifImage
       })
     }
+
+    this.$store.dispatch('removeAllTasks')
+    ipcRenderer.on('task-create', (event, task: BackgroundTask) => {
+      this.$store.commit('addTask', task)
+    })
+    ipcRenderer.on('task-update', (event, update: TaskUpdate) => {
+      this.$store.commit('processTaskUpdate', update)
+      if (update.state === TaskState.Error || update.state === TaskState.Success) {
+        setTimeout(() => {
+          this.$store.commit('removeTask', update.uuid)
+        }, 2000)
+      }
+    })
   }
 }
 </script>

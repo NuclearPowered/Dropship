@@ -5,9 +5,14 @@
       <div class="pl-2 title-div">
         <h3 class="card-title">{{ ModBuildCard.title }}</h3>
       </div>
-      <span class="icon" @click="$emit('action', ModBuildCard)">
-        <i class="fas fa-download"></i>
-      </span>
+      <VuePopper trigger="hover" :options="{placement: 'bottom'}">
+        <div class="popper">
+          Queue mod for install?
+        </div>
+        <div slot="reference" class="icon" @click="onClick()">
+          <i class="fas fa-download icon"></i>
+        </div>
+      </VuePopper>
     </div>
   </div>
 </template>
@@ -15,29 +20,41 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { ModBuildCard } from '@/models/cardViewModel'
+import VuePopper from 'vue-popperjs'
 
-@Component({})
+@Component({
+  components: { VuePopper }
+})
 export default class VModBuildCard extends Vue {
   @Prop()
   ModBuildCard!: ModBuildCard
+
+  onClick () {
+    this.$emit('action', this.ModBuildCard)
+  }
 }
 </script>
 <style scoped lang="stylus">
+.popper
+  background-color #0d2d42
+  padding 5px
+  font-size 12px
+  border-radius 5px
+  opacity .8
+.icon
+  transition all .15s ease-in-out
+  color white
+  font-size 20px
+  cursor pointer
+  &:hover
+    color #6f0606
 .card
   background-color #FF6868
-
-  .header
-    background-color #E85555
-    .title-div
-      width 60%
-    .icon
-      position absolute
-      right 10%
-      top 15%
-      font-size 28px
-      cursor pointer
-
-  .card-img
-    width 72px
-    filter drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))
+.header
+  background-color #E85555
+.title-div
+  width 60%
+.card-img
+  width 72px
+  filter drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))
 </style>

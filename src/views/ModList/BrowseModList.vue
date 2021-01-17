@@ -11,8 +11,8 @@
       </div>
     </div>
     <div v-else>
-      <div class="row" v-infinite-scroll="loadMore" :infinite-scroll-disabled="busy">
-        <div v-if="modList.length > 0">
+      <div v-infinite-scroll="loadMore" :infinite-scroll-disabled="busy">
+        <div class="row" v-if="modList.length > 0">
           <div v-for="(mod, i) in modList" :key="i" class="col-6 col-lg-4 mb-3">
             <VModCard :mod-card="mod" @action="selectMod($event)"/>
           </div>
@@ -141,10 +141,10 @@ export default class BrowseModList extends Vue {
   }
 
   async downloadModBuild (event: ModBuildCard) {
+    this.modalDisplayed = false
     const success = await ModListService.downloadModByUrl(event.footer!.downloadUrl, event.footer!.fileName); // eslint-disable-line
     if (success) {
       this.modList.splice(this.modList.findIndex(m => m.id === event.subtitle.modId), 1)
-      this.modalDisplayed = false
       this.$router.push('/modlist')
     }
   }

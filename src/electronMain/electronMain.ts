@@ -19,6 +19,8 @@ import InstallBepinexArgs from '@/electronMain/models/installBepinexArgs'
 import * as dns from 'dns'
 import globby from 'globby'
 import { ELECTRON_APP_ID } from '@/consts'
+import { v4 as uuidv4 } from 'uuid'
+import { BackgroundTask, TaskState, TaskUpdate } from '@/electronMain/models/backgroundTask'
 
 export default class ElectronMain {
   fileWatcher!: chokidar.FSWatcher;
@@ -168,20 +170,64 @@ export default class ElectronMain {
       const downloadedFile = await axios.get(downloadUrl, {
         responseType: 'stream'
       })
-      if (downloadedFile.status === 200) {
-        const modFile = path.join(location, 'BepInEx', 'plugins', fileName)
-        try {
-          const writer = fs.createWriteStream(modFile)
-          downloadedFile.data.pipe(writer)
-          writer.on('finish', () => event.reply('download-mod', true))
-          writer.on('error', () => event.reply('download-mod', false))
-        } catch {
-          console.warn(`Could not write file to ${modFile}`)
-          event.reply('download-mod', false)
-        }
-        return
+      if (downloadedFile.status !== 200) {
+        console.warn(`Download mod request returned status code ${downloadedFile.status}`)
+        event.reply('download-mod', false)
       }
-      event.reply('download-mod', false)
+
+      const modFile = path.join(location, 'BepInEx', 'plugins', fileName)
+      const task: BackgroundTask = {
+        uuid: uuidv4(),
+        name: fileName,
+        state: TaskState.Created,
+        currentProgress: 0,
+        totalProgress: parseInt(downloadedFile.headers['content-length']) || 0
+      }
+      event.reply('task-create', task)
+
+      try {
+        const writer = fs.createWriteStream(modFile)
+        downloadedFile.data.pipe(writer)
+
+        downloadedFile.data.on('data', (data: Buffer) => {
+          task.currentProgress += Buffer.byteLength(data)
+          const taskUpdate: TaskUpdate = {
+            uuid: task.uuid,
+            currentProgress: task.currentProgress,
+            state: TaskState.Running
+          }
+          event.reply('task-update', taskUpdate)
+        })
+
+        writer.on('finish', () => {
+          const taskUpdate: TaskUpdate = {
+            uuid: task.uuid,
+            currentProgress: task.totalProgress,
+            state: TaskState.Success
+          }
+          event.reply('task-update', taskUpdate)
+          event.reply('download-mod', true)
+        })
+
+        writer.on('error', () => {
+          const taskUpdate: TaskUpdate = {
+            uuid: task.uuid,
+            currentProgress: task.currentProgress,
+            state: TaskState.Error
+          }
+          event.reply('task-update', taskUpdate)
+          event.reply('download-mod', false)
+        })
+      } catch {
+        console.warn(`Could not open write stream to file ${modFile}`)
+        const taskUpdate: TaskUpdate = {
+          uuid: task.uuid,
+          currentProgress: task.currentProgress,
+          state: TaskState.Error
+        }
+        event.reply('task-update', taskUpdate)
+        event.reply('download-mod', false)
+      }
     } catch (e) {
       console.warn(`Error downloading mod at: ${downloadUrl}`)
       event.reply('download-mod', false)

@@ -1,8 +1,8 @@
 <template>
   <div class="container">
     <div class="row">
-      <div class="row" v-infinite-scroll="loadMore" :infinite-scroll-disabled="busy">
-        <div v-if="serverList.length > 0">
+      <div v-infinite-scroll="loadMore" :infinite-scroll-disabled="busy">
+        <div class="row" v-if="serverList.length > 0">
           <div v-for="(server, i) in serverList" :key="i" class="col-6 col-lg-4 mb-3">
             <VServerCard :server-card="server" @action="addServer($event)" />
           </div>
