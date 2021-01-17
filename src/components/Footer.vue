@@ -22,7 +22,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import LauncherService from '@/services/launcherService'
 import { BackgroundTask } from '@/electronMain/models/backgroundTask'
-import TaskItem from '@/components/TaskItem'
+import TaskItem from '@/components/TaskItem.vue'
 
 @Component({
   components: { TaskItem }
