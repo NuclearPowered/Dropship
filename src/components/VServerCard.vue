@@ -6,10 +6,16 @@
         <div class="pl-2">
           <h3 class="card-title">{{ ServerCard.title }}</h3>
           <h6 class="card-subtitle font-italic">{{ subtitle }}</h6>
+          <h6 class="card-subtitle font-italic">{{ subtitleSecondary }}</h6>
         </div>
-        <div style="font-size: 20px; cursor: pointer;" @click="$emit('action', ServerCard)">
-          <i class="fas" v-if="icon" :class="[icon]"></i>
-        </div>
+        <VuePopper trigger="hover" :options="{placement: 'bottom'}">
+          <div class="popper">
+            {{ popperMsg }}
+          </div>
+          <div slot="reference" class="icon" @click="onClick()">
+            <i class="fas icon" v-if="icon" :class="[icon]"></i>
+          </div>
+        </VuePopper>
       </div>
     </div>
 
@@ -24,11 +30,29 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { ServerCard, ServerCardIcon } from '@/models/cardViewModel'
 import ServerListService from '@/services/serverListService'
+import VuePopper from 'vue-popperjs'
 
-@Component({})
+@Component({
+  components: { VuePopper }
+})
 export default class VServerCard extends Vue {
   @Prop()
   ServerCard!: ServerCard;
+
+  clicked = false
+
+  onClick () {
+    this.$emit('action', this.ServerCard)
+    this.clicked = true
+  }
+
+  get popperMsg () {
+    if (this.ServerCard.cardIcon === ServerCardIcon.Liked) {
+      return 'Remove server?'
+    } else if (this.ServerCard.cardIcon === ServerCardIcon.Unliked) {
+      return 'Save this server?'
+    }
+  }
 
   get icon (): 'fa-heart-broken' | 'fa-heart' {
     if (this.ServerCard.cardIcon === ServerCardIcon.Liked) { // the icon should represent the action of removing
@@ -39,11 +63,11 @@ export default class VServerCard extends Vue {
   }
 
   get subtitle () {
-    if (this.ServerCard.subtitle.owner) {
-      return `${ServerListService.num2dot(this.ServerCard.subtitle.ipAddress)}:${this.ServerCard.subtitle.port} - ${this.ServerCard.subtitle.owner}`
-    } else {
-      return `${ServerListService.num2dot(this.ServerCard.subtitle.ipAddress)}:${this.ServerCard.subtitle.port}`
-    }
+    return `${ServerListService.num2dot(this.ServerCard.subtitle.ipAddress)}`
+  }
+
+  get subtitleSecondary () {
+    return this.ServerCard.subtitle.owner || ''
   }
 
   get health () {
@@ -52,15 +76,28 @@ export default class VServerCard extends Vue {
 }
 </script>
 <style scoped lang="stylus">
+.popper
+  background-color #0d2d42
+  padding 5px
+  font-size 12px
+  border-radius 5px
+  opacity .8
+.icon
+  transition all .15s ease-in-out
+  color white
+  font-size 20px
+  cursor pointer
+  &:hover
+    color #6f0606
 .card
   background-color #FF6868
-  .header
-    background-color #E85555
-  .card-img
-    width 72px
-    max-height 100px
-    max-width 72px
-    filter drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))
-  .card-text
-    max-height 6rem
+.header
+  background-color #E85555
+.card-img
+  width 72px
+  max-height 100px
+  max-width 72px
+  filter drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25))
+.card-text
+  max-height 6rem
 </style>

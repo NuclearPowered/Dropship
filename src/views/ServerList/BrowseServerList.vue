@@ -68,6 +68,7 @@ export default class BrowseServerList extends Vue {
     const success = await ServerListService.addServer(event.id, event.title, event.subtitle.ipAddress, event.subtitle.port)
     if (success) {
       this.serverList.splice(this.serverList.findIndex(srv => srv.id === event.id), 1)
+      this.$router.push('/serverlist')
     }
   }
 }

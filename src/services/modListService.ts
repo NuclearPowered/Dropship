@@ -71,11 +71,15 @@ export default class ModListService {
   }
 
   static async getModListPaginated (page: number): Promise<ModResponse[] | undefined> {
-    const response: GenericResponse | GenericResponseWithData<ModResponse[]> =
-      (await webapi().get(`/api/mods/page/${page}`)).data
+    try {
+      const response: GenericResponse | GenericResponseWithData<ModResponse[]> =
+        (await webapi().get(`/api/mods/page/${page}`)).data
 
-    if (response.success) {
-      return (response as GenericResponseWithData<ModResponse[]>).data
+      if (response.success) {
+        return (response as GenericResponseWithData<ModResponse[]>).data
+      }
+    } catch (e) {
+      console.warn(`Could not ${this.getModListPaginated.toString()}`)
     }
   }
 
@@ -93,11 +97,15 @@ export default class ModListService {
   }
 
   static async getModBuildsPaginatedFor (modid: number, page: number): Promise<ModBuildResponse[] | undefined> {
-    const response: GenericResponse | GenericResponseWithData<ModBuildResponse[]> =
-      (await webapi().get(`/api/modbuilds/${modid}/page/${page}`)).data
+    try {
+      const response: GenericResponse | GenericResponseWithData<ModBuildResponse[]> =
+        (await webapi().get(`/api/modbuilds/${modid}/page/${page}`)).data
 
-    if (response.success) {
-      return (response as GenericResponseWithData<ModBuildResponse[]>).data
+      if (response.success) {
+        return (response as GenericResponseWithData<ModBuildResponse[]>).data
+      }
+    } catch (e) {
+      console.warn(`Could not ${this.getModBuildsPaginatedFor.toString()}`)
     }
   }
 

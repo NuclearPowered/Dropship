@@ -10,7 +10,7 @@
       <span class="text-white">Launch</span>
     </button>
     <div class="w-25 text-center">
-      <p style="height: fit-content" v-if="username">Logged in as {{ username }}</p>
+      <p style="height: fit-content">Dropship alpha</p>
     </div>
   </footer>
 </template>

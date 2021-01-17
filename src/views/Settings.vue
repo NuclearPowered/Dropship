@@ -53,7 +53,6 @@
         </div>
       </form>
       <button class="btn btn-dark float-left m-3" @click="firstLaunchAgain">Instructions</button>
-      <button class="btn btn-danger float-right m-3" @click="logout">Logout</button>
     </div>
   </div>
 </template>
@@ -62,7 +61,6 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { ValidationObserver, ValidationProvider } from 'vee-validate'
 import LauncherService from '@/services/launcherService'
-import AuthService from '@/services/authService'
 import { LaunchWrapperType } from '@/electronMain/models/gameLaunchArgs'
 import { Route } from 'vue-router'
 import VModal from '@/components/VModal.vue'
@@ -111,11 +109,6 @@ export default class Settings extends Vue {
   async firstLaunchAgain () {
     this.$store.commit('updateFirstLaunch', true)
     this.$router.push('/firstLaunch')
-  }
-
-  async logout () {
-    await AuthService.logout()
-    this.$router.push('/login')
   }
 
   beforeRouteLeave (to: Route, from: Route, next: () => void) {

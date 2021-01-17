@@ -20,3 +20,8 @@ declare module 'vue-infinite-scroll' {
 declare module '@nuclearpowered/dropship-native-addon' {
   export function parse(userpath: string): any;
 }
+
+declare module 'vue-popperjs' {
+  const value: any
+  export = value;
+}

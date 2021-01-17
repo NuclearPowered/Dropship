@@ -2,7 +2,6 @@ import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 import ModList from '@/views/ModList.vue'
 import ServerList from '@/views/ServerList.vue'
-import Login from '@/views/Login.vue'
 import store from '@/store'
 import Settings from '@/views/Settings.vue'
 import InstalledModList from '@/views/ModList/InstalledModList.vue'
@@ -15,12 +14,6 @@ import DirectConnectServer from '@/views/ServerList/DirectConnectServer.vue'
 Vue.use(VueRouter)
 
 export const routes: Array<RouteConfig> = [
-  {
-    path: '/login',
-    name: 'login',
-    component: Login,
-    props: route => ({ redirectURL: route.query.redirectURL })
-  },
   {
     path: '/firstLaunch',
     name: 'firstLaunch',
@@ -88,11 +81,7 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (!store.state.auth.loggedIn && to.path !== '/login') {
-    next({ path: 'login', query: { redirectURL: to.path } })
-  } else if (!store.state.auth.loggedIn && to.path === '/login') {
-    next()
-  } else if (store.state.firstLaunch && to.path !== '/firstLaunch') {
+  if (store.state.firstLaunch && to.path !== '/firstLaunch') {
     next({ path: 'firstLaunch' })
   }
   next()

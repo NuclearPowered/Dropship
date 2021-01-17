@@ -1,8 +1,8 @@
 <template>
   <header class="fixed-top d-flex justify-content-between align-items-center bg-verydark">
-    <div class="d-flex align-items-center">
-      <img src="@/assets/icons/inject.svg" class="px-3 mt-2">
-      <span class="title font-weight-bold my-3">Dropship</span>
+    <div class="d-flex align-items-center title">
+      <img src="@/assets/icons/icon.png" class="px-3">
+      <span class="my-3 heading">Dropship</span>
     </div>
     <div class="d-flex align-items-center">
       <router-link v-for="button in buttons"
@@ -28,7 +28,11 @@ export default class Header extends Vue {
 </script>
 <style scoped lang="stylus">
 .title
-  font-size 36px
+  img
+    height 48px
+  .heading
+    font-size 36px
+    font-family Ubuntu
 .router-link
   height 38px
   width 138px

@@ -52,8 +52,7 @@ export default class App extends Vue {
   currentRoute: Route = this.$router.currentRoute;
 
   get showFooter () {
-    return this.$store.state.auth.loggedIn &&
-      !this.$store.state.firstLaunch &&
+    return !this.$store.state.firstLaunch &&
       !this.currentRoute.path.includes('/settings')
   }
 
