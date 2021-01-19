@@ -123,7 +123,6 @@ const store = new Vuex.Store({
   modules: {
   },
   plugins: [createPersistedState({
-    overwrite: true,
     filter (mutation) {
       return ['addTask', 'removeTask', 'processTaskUpdate']
         .every(x => x !== mutation.type)
