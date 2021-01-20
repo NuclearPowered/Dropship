@@ -7,8 +7,11 @@
         <div class="form-group pb-3">
           <ValidationProvider rules="required" v-slot="v">
             <label for="location" class="py-2">Location: </label>
-            <input type="text" class="form-control" id="location" placeholder="Location of AmongUs Directory"
+            <div class="input-group">
+              <input type="text" class="form-control" id="location" placeholder="Location of AmongUs Directory"
                    v-model="location" @blur="saveLocation()">
+              <button class="btn btn-info" @click="chooseFolder()">Choose Folder</button>
+            </div>
             <small class="form-text text-danger">{{ v.errors[0] }}</small>
           </ValidationProvider>
           <button class="btn btn-primary btn-block my-1" @click.prevent="autodetect">Autodetect</button>
@@ -66,6 +69,7 @@ import { Route } from 'vue-router'
 import VModal from '@/components/VModal.vue'
 import UpdateService from '@/services/updateService'
 import * as os from 'os'
+import { dialog, remote } from 'electron'
 
 @Component({
   components: {
@@ -81,6 +85,18 @@ export default class Settings extends Vue {
 
   get btncolor (): 'btn-secondary' | 'btn-success' {
     return this.$store.state.bepinex.installed ? 'btn-success' : 'btn-secondary'
+  }
+
+  async chooseFolder () {
+    const response = await remote.dialog.showOpenDialog(remote.getCurrentWindow(), {
+      title: 'Choose Among Us Install directory',
+      properties: ['openDirectory']
+    })
+
+    if (!response.canceled) {
+      this.location = response.filePaths[0]
+      this.saveLocation()
+    }
   }
 
   async saveLocation () {
