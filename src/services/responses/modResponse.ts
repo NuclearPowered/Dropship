@@ -1,3 +1,4 @@
+import { GamePlatform, GameVersion } from '@/models/storeModel'
 import UserResponse from './userResponse'
 
 export interface ModResponse {
@@ -13,6 +14,8 @@ export interface ModBuildResponse {
   id: number;
   modId: number;
   versionCode: number;
+  gamePlatform: GamePlatform;
+  gameVersion: GameVersion;
   version: string;
   fileName: string;
   downloadUrl: string;

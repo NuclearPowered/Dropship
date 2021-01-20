@@ -17,6 +17,28 @@
           <button class="btn btn-primary btn-block my-1" @click.prevent="autodetect">Autodetect</button>
         </div>
         <div class="form-group pb-3">
+          <label for="launchWrapper" class="py-2">Launch method: </label>
+          <select class="form-control" v-model="launchWrapper" id="launchWrapper">
+            <option :value="0">Steam</option>
+            <option :value="1">Standard</option>
+            <option :value="2">Custom</option>
+          </select>
+          <div v-if="launchWrapper === 2">
+            <ValidationProvider rules="required" v-slot="v">
+              <label for="customExec" class="py-2">Location: </label>
+              <input v-model="customExecLine" type="text" class="form-control" id="customExec" placeholder="Custom Exec Line">
+              <small class="form-text text-danger">{{ v.errors[0] }}</small>
+            </ValidationProvider>
+          </div>
+        </div>
+        <div class="form-group pb-3" v-if="launchWrapper !== 0">
+          <label for="gamePlatform" class="py-2">Game Platform: </label>
+          <select class="form-control" v-model="gamePlatform" id="gamePlatform">
+            <option :value="1">Steam</option>
+            <option :value="2">Itch</option>
+          </select>
+        </div>
+        <div class="form-group pb-3">
           <label for="bepinex" class="py-2">Patcher: </label>
           <button class="btn btn-block my-1"
                   :class="[btncolor]"
@@ -39,21 +61,6 @@
             </ul>
           </div>
         </div>
-        <div class="form-group">
-          <label for="launchWrapper" class="py-2">Launch method: </label>
-          <select class="form-control" v-model="launchWrapper" id="launchWrapper">
-            <option :value="0">Steam</option>
-            <option :value="1">Standard</option>
-            <option :value="2">Custom</option>
-          </select>
-          <div v-if="launchWrapper === 2">
-            <ValidationProvider rules="required" v-slot="v">
-              <label for="customExec" class="py-2">Location: </label>
-              <input v-model="customExecLine" type="text" class="form-control" id="customExec" placeholder="Custom Exec Line">
-              <small class="form-text text-danger">{{ v.errors[0] }}</small>
-            </ValidationProvider>
-          </div>
-        </div>
       </form>
       <button class="btn btn-dark float-left m-3" @click="firstLaunchAgain">Instructions</button>
     </div>
@@ -69,7 +76,8 @@ import { Route } from 'vue-router'
 import VModal from '@/components/VModal.vue'
 import UpdateService from '@/services/updateService'
 import * as os from 'os'
-import { dialog, remote } from 'electron'
+import { remote } from 'electron'
+import { GamePlatform, GameVersion } from '@/models/storeModel'
 
 @Component({
   components: {
@@ -82,6 +90,7 @@ export default class Settings extends Vue {
   location = this.$store.state.gameInstallInfo.location;
   launchWrapper: LaunchWrapperType = this.$store.state.gameInstallInfo.launchWrapper;
   customExecLine = this.$store.state.gameInstallInfo.customExecLine;
+  gamePlatform = this.$store.state.gameInstallInfo.gamePlatform;
 
   get btncolor (): 'btn-secondary' | 'btn-success' {
     return this.$store.state.bepinex.installed ? 'btn-success' : 'btn-secondary'
@@ -99,20 +108,24 @@ export default class Settings extends Vue {
     }
   }
 
-  async saveLocation () {
-    if (this.$store.state.gameInstallInfo.location !== this.location) {
-      this.$store.commit('updateBepinexInstalled', false)
-      this.$store.commit('updateBepinexVersion', 0)
-    }
-    this.$store.commit('updateInstallLocation', this.location)
-  }
-
   async autodetect () {
     const location = await LauncherService.autodetectPath()
     if (location) {
       this.location = (location as string)
       await this.saveLocation()
     }
+  }
+
+  async saveLocation () {
+    if (this.$store.state.gameInstallInfo.location !== this.location) {
+      this.$store.commit('updateBepinexInstalled', false)
+      this.$store.commit('updateBepinexVersion', 0)
+    }
+    this.$store.commit('updateInstallLocation', this.location)
+
+    // locate game version
+    const version = LauncherService.getGameVersion()
+    this.$store.commit('updateGameVersion', version ?? GameVersion.Unknown)
   }
 
   async installBepinex () {
@@ -129,10 +142,13 @@ export default class Settings extends Vue {
 
   beforeRouteLeave (to: Route, from: Route, next: () => void) {
     this.saveLocation()
+    if (this.launchWrapper === LaunchWrapperType.Steam) {
+      this.gamePlatform = GamePlatform.Steam
+    }
     this.$store.dispatch('updateGameLaunchInfo', {
-      location: this.location,
       launchWrapper: this.launchWrapper,
-      customExecLine: this.customExecLine
+      customExecLine: this.customExecLine,
+      gamePlatform: this.gamePlatform
     })
     next()
   }

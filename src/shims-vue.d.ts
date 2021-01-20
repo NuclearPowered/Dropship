@@ -19,6 +19,7 @@ declare module 'vue-infinite-scroll' {
 
 declare module '@nuclearpowered/dropship-native-addon' {
   export function parse(userpath: string): any;
+  export function parseAmongUsVersion(userpath: string): any;
 }
 
 declare module 'vue-popperjs' {

@@ -37,6 +37,10 @@ export default class BrowseServerList extends Vue {
     await this.refresh(this.currentPage++)
   }
 
+  async created () {
+    await this.loadMore()
+  }
+
   async refresh (pageNum: number) {
     const serverList = await ServerListService.getServerListPaginated(pageNum)
     if (serverList && serverList.length > 0) {

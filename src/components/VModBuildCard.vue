@@ -1,9 +1,13 @@
 <template>
   <div class="card m-2 h-100">
-    <div class="d-flex p-3 header shadow-lg">
+    <div class="d-flex px-3 pt-3 header shadow-lg">
       <img :src="ModBuildCard.image" class="card-img" alt="Mod Build Image">
       <div class="pl-2 title-div">
         <h3 class="card-title">{{ ModBuildCard.title }}</h3>
+        <div class="card-subtitle">
+          <div>{{ gamePlatform }} platform</div>
+          <div>Game: {{ gameVersion }}</div>
+        </div>
       </div>
       <VuePopper trigger="hover" :options="{placement: 'bottom'}">
         <div class="popper">
@@ -21,6 +25,8 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { ModBuildCard } from '@/models/cardViewModel'
 import VuePopper from 'vue-popperjs'
+import { GamePlatform } from '@/models/storeModel'
+import LauncherService from '@/services/launcherService'
 
 @Component({
   components: { VuePopper }
@@ -31,6 +37,19 @@ export default class VModBuildCard extends Vue {
 
   onClick () {
     this.$emit('action', this.ModBuildCard)
+  }
+
+  get gamePlatform () {
+    return GamePlatform[this.ModBuildCard.subtitle.gamePlatform]
+  }
+
+  versionMap = {
+    0: 'Unknown',
+    [LauncherService.generateGameVersion(2020, 12, 9)]: '2020.12.9'
+  }
+
+  get gameVersion () {
+    return this.versionMap[this.ModBuildCard.subtitle.gameVersion]
   }
 }
 </script>

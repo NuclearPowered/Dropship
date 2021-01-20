@@ -48,6 +48,8 @@ import VModal from '@/components/VModal.vue'
 import ModDefault from '@/assets/icons/mod_default.png'
 import * as _ from 'lodash'
 import SkeletonCard from '@/components/SkeletonCard.vue'
+import LauncherService from '@/services/launcherService'
+import { GamePlatform, GameVersion } from '@/models/storeModel'
 
 @Component({
   components: { SkeletonCard, VModBuildCard, VModCard, VModal }
@@ -85,6 +87,10 @@ export default class BrowseModList extends Vue {
   async loadMore () {
     this.busy = true
     await this.refresh(this.currentPage++)
+  }
+
+  async created () {
+    await this.loadMore()
   }
 
   async refresh (page: number) {
@@ -129,7 +135,9 @@ export default class BrowseModList extends Vue {
         title: m.version,
         subtitle: {
           modId: m.modId,
-          versionCode: m.versionCode
+          versionCode: m.versionCode,
+          gamePlatform: m.gamePlatform ?? GamePlatform.Unknown,
+          gameVersion: m.gameVersion ?? GameVersion.Unknown
         },
         cardIcon: ModCardIcon.Download,
         footer: {

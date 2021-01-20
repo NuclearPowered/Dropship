@@ -5,3 +5,7 @@ require('hazardous') // overload path.join() to use app.asar.unpacked
 export function getModMetadata (file: string): ModMetadata {
   return nativeparser.parse(file)
 }
+
+export function getAmongUsVersion (file: string): string {
+  return nativeparser.parseAmongUsVersion(file)
+}

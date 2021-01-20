@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 import jwt_decode from "jwt-decode"; // eslint-disable-line
 import { LaunchWrapperType } from '@/electronMain/models/gameLaunchArgs'
-import StoreModel, { StoreServerModel } from '@/models/storeModel'
+import StoreModel, { GamePlatform, GameVersion, StoreServerModel } from '@/models/storeModel'
 import { BackgroundTask, TaskUpdate } from '@/electronMain/models/backgroundTask'
 
 Vue.use(Vuex)
@@ -25,7 +25,9 @@ const store = new Vuex.Store({
     gameInstallInfo: {
       location: 'AMONGUSDIR',
       launchWrapper: LaunchWrapperType.Standard,
-      customExecLine: ''
+      customExecLine: '',
+      gameVersion: GameVersion.v2020129,
+      gamePlatform: GamePlatform.Steam
     },
     tasks: []
   } as StoreModel,
@@ -77,6 +79,12 @@ const store = new Vuex.Store({
     updateCustomExecLine (state, customExecLine: string) {
       state.gameInstallInfo.customExecLine = customExecLine
     },
+    updateGameVersion (state, gameVersion: number) {
+      state.gameInstallInfo.gameVersion = gameVersion
+    },
+    updateGamePlatform (state, gamePlatform: number) {
+      state.gameInstallInfo.gamePlatform = gamePlatform
+    },
     addTask (state, backgroundTask: BackgroundTask) {
       state.tasks.push(backgroundTask)
     },
@@ -112,9 +120,11 @@ const store = new Vuex.Store({
       commit('updateBepinexVersion', payload)
     },
     updateGameLaunchInfo ({ commit }, payload: { launchWrapper: LaunchWrapperType;
-                                                customExecLine: string; }) {
+                                                customExecLine: string;
+                                                gamePlatform: number; }) {
       commit('updateLaunchWrapperType', payload.launchWrapper)
       commit('updateCustomExecLine', payload.customExecLine)
+      commit('updateGamePlatform', payload.gamePlatform)
     },
     removeAllTasks ({ commit, state }) {
       state.tasks.forEach(t => commit('removeTask', t.uuid))

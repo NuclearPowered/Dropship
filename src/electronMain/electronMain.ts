@@ -6,7 +6,7 @@ import path from 'path'
 import * as registry from 'registry-js'
 import fs from 'fs'
 import GameLaunchArgs, { LaunchWrapperType } from '@/electronMain/models/gameLaunchArgs'
-import { getModMetadata } from '@/electronMain/native'
+import { getAmongUsVersion, getModMetadata } from '@/electronMain/native'
 import ModMetadata from '@/electronMain/models/modMetadata'
 import { DownloadModArgs, RemoveModArgs } from '@/electronMain/models/modArgs'
 import axios from 'axios'
@@ -51,6 +51,7 @@ export default class ElectronMain {
     })
     ipcMain.on('stop-file-watcher', this.stopFileWatcher)
     ipcMain.on('install-bepinex', this.installBepinex)
+    ipcMain.on('get-game-version', this.getGameVersion)
   }
 
   async launchGame (event: IpcMainEvent, args: GameLaunchArgs) {
@@ -374,5 +375,20 @@ export default class ElectronMain {
       console.warn('Could not download and install BepInEx')
       event.reply('install-bepinex', false)
     }
+  }
+
+  async getGameVersion (event: IpcMainEvent, location: string) {
+    const globalgamemanagerPath = path.join(location, 'Among Us_Data', 'globalgamemanagers')
+    try {
+      if (fs.existsSync(globalgamemanagerPath)) {
+        const version = getAmongUsVersion(location)
+        const parsedVersion = version.split('.').map(i => parseInt(i))
+        event.reply('get-game-version', parsedVersion)
+        return
+      }
+    } catch (e) {}
+
+    console.warn(`Cannot read game version from ${globalgamemanagerPath}`)
+    event.reply('get-game-version', false)
   }
 }
