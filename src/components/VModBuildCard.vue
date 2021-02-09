@@ -5,8 +5,7 @@
       <div class="pl-2 title-div">
         <h3 class="card-title">{{ ModBuildCard.title }}</h3>
         <div class="card-subtitle">
-          <div>{{ gamePlatform }} platform</div>
-          <div>Game: {{ gameVersion }}</div>
+          <div>Game: {{ gameVersionPlatform }}</div>
         </div>
       </div>
       <VuePopper trigger="hover" :options="{placement: 'bottom'}">
@@ -39,17 +38,13 @@ export default class VModBuildCard extends Vue {
     this.$emit('action', this.ModBuildCard)
   }
 
-  get gamePlatform () {
-    return GamePlatform[this.ModBuildCard.subtitle.gamePlatform]
-  }
-
   versionMap = {
     0: 'Unknown',
     [LauncherService.generateGameVersion(2020, 12, 9)]: '2020.12.9'
   }
 
-  get gameVersion () {
-    return this.versionMap[this.ModBuildCard.subtitle.gameVersion]
+  get gameVersionPlatform () {
+    return this.versionMap[this.ModBuildCard.subtitle.gameVersion] + GamePlatform[this.ModBuildCard.subtitle.gamePlatform][0]
   }
 }
 </script>
