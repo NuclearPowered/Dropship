@@ -3,8 +3,9 @@ import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 import jwt_decode from "jwt-decode"; // eslint-disable-line
 import { LaunchWrapperType } from '@/electronMain/models/gameLaunchArgs'
-import StoreModel, { GamePlatform, GameVersion, StoreServerModel } from '@/models/storeModel'
+import StoreModel, { StoreServerModel } from '@/models/storeModel'
 import { BackgroundTask, TaskUpdate } from '@/electronMain/models/backgroundTask'
+import GameVersion, { GamePlatform, GameVerPlatInfo } from '@/services/gameVersionService'
 
 Vue.use(Vuex)
 
@@ -26,8 +27,7 @@ const store = new Vuex.Store({
       location: 'AMONGUSDIR',
       launchWrapper: LaunchWrapperType.Standard,
       customExecLine: '',
-      gameVersion: GameVersion.v2020129,
-      gamePlatform: GamePlatform.Steam
+      gameVersionPlatform: GameVersion.versionPlatform(GamePlatform.Steam, 2020, 12, 9)
     },
     tasks: []
   } as StoreModel,
@@ -79,11 +79,8 @@ const store = new Vuex.Store({
     updateCustomExecLine (state, customExecLine: string) {
       state.gameInstallInfo.customExecLine = customExecLine
     },
-    updateGameVersion (state, gameVersion: number) {
-      state.gameInstallInfo.gameVersion = gameVersion
-    },
-    updateGamePlatform (state, gamePlatform: number) {
-      state.gameInstallInfo.gamePlatform = gamePlatform
+    updateGameVersionPlatform (state, gameVersionPlatform: GameVerPlatInfo) {
+      state.gameInstallInfo.gameVersionPlatform = gameVersionPlatform
     },
     addTask (state, backgroundTask: BackgroundTask) {
       state.tasks.push(backgroundTask)
@@ -121,10 +118,10 @@ const store = new Vuex.Store({
     },
     updateGameLaunchInfo ({ commit }, payload: { launchWrapper: LaunchWrapperType;
                                                 customExecLine: string;
-                                                gamePlatform: number; }) {
+                                                gameVersionPlatform: GameVerPlatInfo; }) {
       commit('updateLaunchWrapperType', payload.launchWrapper)
       commit('updateCustomExecLine', payload.customExecLine)
-      commit('updateGamePlatform', payload.gamePlatform)
+      commit('updateGameVersionPlatform', payload.gameVersionPlatform)
     },
     removeAllTasks ({ commit, state }) {
       state.tasks.forEach(t => commit('removeTask', t.uuid))

@@ -1,4 +1,4 @@
-import { GamePlatform, GameVersion } from './storeModel'
+import { GamePlatform } from '@/services/gameVersionService'
 
 export interface Card {
   id: number;
@@ -30,7 +30,7 @@ export interface ModBuildCardSubtitle {
   modId: number;
   versionCode: number;
   gamePlatform: GamePlatform;
-  gameVersion: GameVersion;
+  gameVersion: number;
 }
 export interface ServerCardSubtitle {
   ipAddress: number;

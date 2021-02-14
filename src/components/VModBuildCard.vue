@@ -24,7 +24,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { ModBuildCard } from '@/models/cardViewModel'
 import VuePopper from 'vue-popperjs'
-import { GamePlatform } from '@/models/storeModel'
+import GameVersion, { GamePlatform } from '@/services/gameVersionService'
 import LauncherService from '@/services/launcherService'
 
 @Component({
@@ -40,7 +40,7 @@ export default class VModBuildCard extends Vue {
 
   versionMap = {
     0: 'Unknown',
-    [LauncherService.generateGameVersion(2020, 12, 9)]: '2020.12.9'
+    [GameVersion.versionNumber(2020, 12, 9)]: '2020.12.9'
   }
 
   get gameVersionPlatform () {

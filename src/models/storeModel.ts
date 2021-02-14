@@ -2,6 +2,7 @@
 
 import { LaunchWrapperType } from "@/electronMain/models/gameLaunchArgs";
 import { BackgroundTask } from "@/electronMain/models/backgroundTask";
+import { GameVerPlatInfo } from "@/services/gameVersionService";
 
 export default interface StoreModel {
   firstLaunch: boolean;
@@ -20,25 +21,9 @@ export default interface StoreModel {
     location: string;
     launchWrapper: LaunchWrapperType;
     customExecLine: string;
-    gameVersion: GameVersion;
-    gamePlatform: GamePlatform;
+    gameVersionPlatform: GameVerPlatInfo;
   };
   tasks: BackgroundTask[];
-}
-
-export enum GamePlatform {
-  Unknown,
-  Steam,
-  Itch
-}
-
-export enum GameVersion {
-  Unknown,
-  v2020129 = generateGameVersion(2020, 12, 9)
-}
-
-function generateGameVersion (year: number, month: number, day: number, rev = 0) {
-  return (year * 25000) + (month * 1800) + (day * 50) + rev
 }
 
 export interface StoreServerModel {

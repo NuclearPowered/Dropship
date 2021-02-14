@@ -48,8 +48,6 @@ import VModal from '@/components/VModal.vue'
 import ModDefault from '@/assets/icons/mod_default.png'
 import * as _ from 'lodash'
 import SkeletonCard from '@/components/SkeletonCard.vue'
-import LauncherService from '@/services/launcherService'
-import { GamePlatform, GameVersion } from '@/models/storeModel'
 
 @Component({
   components: { SkeletonCard, VModBuildCard, VModCard, VModal }
@@ -136,8 +134,8 @@ export default class BrowseModList extends Vue {
         subtitle: {
           modId: m.modId,
           versionCode: m.versionCode,
-          gamePlatform: m.gamePlatform ?? GamePlatform.Unknown,
-          gameVersion: m.gameVersion ?? GameVersion.Unknown
+          gamePlatform: m.gamePlatform,
+          gameVersion: m.gameVersion
         },
         cardIcon: ModCardIcon.Download,
         footer: {

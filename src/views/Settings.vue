@@ -31,12 +31,17 @@
             </ValidationProvider>
           </div>
         </div>
-        <div class="form-group pb-3" v-if="launchWrapper !== 0">
-          <label for="gamePlatform" class="py-2">Game Platform: </label>
-          <select class="form-control" v-model="gamePlatform" id="gamePlatform">
-            <option :value="1">Steam</option>
-            <option :value="2">Itch</option>
-          </select>
+        <div class="form-group pb-3">
+          <ValidationProvider rules="required" v-slot="{ errors }">
+            <label class="form-label">Game Version:</label>
+            <select
+              class="form-control"
+              v-model="gameVersionPlatform"
+            >
+              <option v-for="verPlat in versionPlatforms" :key="verPlat.name" :value="verPlat.name">{{ verPlat.name }}</option>
+            </select>
+            <span class="form-text text-danger">{{ errors[0] }}</span>
+          </ValidationProvider>
         </div>
         <div class="form-group pb-3">
           <label for="bepinex" class="py-2">Patcher: </label>
@@ -77,7 +82,7 @@ import VModal from '@/components/VModal.vue'
 import UpdateService from '@/services/updateService'
 import * as os from 'os'
 import { remote } from 'electron'
-import { GamePlatform, GameVersion } from '@/models/storeModel'
+import GameVersion from '@/services/gameVersionService'
 
 @Component({
   components: {
@@ -87,10 +92,12 @@ import { GamePlatform, GameVersion } from '@/models/storeModel'
   }
 })
 export default class Settings extends Vue {
-  location = this.$store.state.gameInstallInfo.location;
-  launchWrapper: LaunchWrapperType = this.$store.state.gameInstallInfo.launchWrapper;
-  customExecLine = this.$store.state.gameInstallInfo.customExecLine;
-  gamePlatform = this.$store.state.gameInstallInfo.gamePlatform;
+  location = this.$store.state.gameInstallInfo.location
+  launchWrapper: LaunchWrapperType = this.$store.state.gameInstallInfo.launchWrapper
+  customExecLine = this.$store.state.gameInstallInfo.customExecLine
+  gameVersionPlatform = this.$store.state.gameInstallInfo.gameVersionPlatform.name
+
+  versionPlatforms = GameVersion.List
 
   get btncolor (): 'btn-secondary' | 'btn-success' {
     return this.$store.state.bepinex.installed ? 'btn-success' : 'btn-secondary'
@@ -124,8 +131,8 @@ export default class Settings extends Vue {
     this.$store.commit('updateInstallLocation', this.location)
 
     // locate game version
-    const version = LauncherService.getGameVersion()
-    this.$store.commit('updateGameVersion', version ?? GameVersion.Unknown)
+    // const version = LauncherService.getGameVersion()
+    // this.$store.commit('updateGameVersionPlatform', version)
   }
 
   async installBepinex () {
@@ -142,13 +149,10 @@ export default class Settings extends Vue {
 
   beforeRouteLeave (to: Route, from: Route, next: () => void) {
     this.saveLocation()
-    if (this.launchWrapper === LaunchWrapperType.Steam) {
-      this.gamePlatform = GamePlatform.Steam
-    }
     this.$store.dispatch('updateGameLaunchInfo', {
       launchWrapper: this.launchWrapper,
       customExecLine: this.customExecLine,
-      gamePlatform: this.gamePlatform
+      gameVersionPlatform: GameVersion.Map[this.gameVersionPlatform]
     })
     next()
   }

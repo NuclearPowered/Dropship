@@ -15,8 +15,8 @@ export default class UpdateService {
 
     const response: GenericResponse | GenericResponseWithData<CheckModBuildUpdateResponse[]> =
       (await webapi().post('/api/update/checkmodbuildupdates', {
-        gameVersion: store.state.gameInstallInfo.gameVersion,
-        gamePlatform: store.state.gameInstallInfo.gamePlatform,
+        gameVersion: store.state.gameInstallInfo.gameVersionPlatform.versionNumber,
+        gamePlatform: store.state.gameInstallInfo.gameVersionPlatform.platform,
         guids: modMetadata.map(m => m.id)
       })).data
 

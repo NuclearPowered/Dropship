@@ -21,6 +21,7 @@ import globby from 'globby'
 import { ELECTRON_APP_ID } from '@/consts'
 import { v4 as uuidv4 } from 'uuid'
 import { BackgroundTask, TaskState, TaskUpdate } from '@/electronMain/models/backgroundTask'
+import GameVersion from '@/services/gameVersionService'
 
 export default class ElectronMain {
   fileWatcher!: chokidar.FSWatcher;
@@ -381,9 +382,10 @@ export default class ElectronMain {
     const globalgamemanagerPath = path.join(location, 'Among Us_Data', 'globalgamemanagers')
     try {
       if (fs.existsSync(globalgamemanagerPath)) {
-        const version = getAmongUsVersion(location)
-        const parsedVersion = version.split('.').map(i => parseInt(i))
-        event.reply('get-game-version', parsedVersion)
+        const versionString = getAmongUsVersion(location)
+        const gamePlatform = GameVersion.fromPlatformString(versionString.slice(-1))
+        const gameVersion = versionString.split('.').map(i => parseInt(i))
+        event.reply('get-game-version', { gameVersion, gamePlatform })
         return
       }
     } catch (e) {}
