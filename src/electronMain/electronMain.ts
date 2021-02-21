@@ -91,7 +91,7 @@ export default class ElectronMain {
       }
       case LaunchWrapperType.Standard:
         if (os.platform() === 'linux' || os.platform() === 'darwin') {
-          exec(`wine "${path.join(args.location, 'Among Us.exe')}" --doorstop-enable=${true}`, launchCallback)
+          exec(`wine "${path.join(args.location, 'Among Us.exe')}" --doorstop-enable=${args.modded}`, launchCallback)
         } else {
           exec(`"${path.join(args.location, 'Among Us.exe')}" --doorstop-enable=${args.modded}`, launchCallback)
         }
