@@ -238,7 +238,7 @@ export default class ElectronMain {
 
   async removeMod (event: IpcMainEvent, { location, guid, version }: RemoveModArgs) {
     try {
-      const modFiles = await globby(path.posix.join(location, 'BepInEx/plugins/**/*.dll'))
+      const modFiles = await globby(path.posix.join(location, 'BepInEx/plugins/**/*.dll'), { noext: true })
       for (const modFile of modFiles) {
         try {
           const metadata = getModMetadata(modFile)
@@ -261,7 +261,7 @@ export default class ElectronMain {
 
   async refreshMods (location: string): Promise<ModMetadata[]> {
     try {
-      const modFiles = await globby(path.posix.join(location, 'BepInEx/plugins/**/*.dll'))
+      const modFiles = await globby(path.posix.join(location, 'BepInEx/plugins/**/*.dll'), { noext: true })
       const modMetadata: ModMetadata[] = []
       for (const modFile of modFiles) {
         try {
