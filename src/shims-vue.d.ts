@@ -26,3 +26,8 @@ declare module 'vue-popperjs' {
   const value: any
   export = value;
 }
+
+declare module 'glob-escape' {
+  function escapeGlob(path: string): string;
+  export = escapeGlob;
+}

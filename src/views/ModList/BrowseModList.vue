@@ -95,22 +95,24 @@ export default class BrowseModList extends Vue {
     const modList = await ModListService.getModListPaginated(page)
     const installedMods = await ModListService.readModsFromFs()
     if (modList && modList.length > 0 && installedMods) {
-      this.modList.push(...modList
-        // Do not include mods that we already have installed
-        .filter(m => !installedMods.some(im => im.id === m.guid))
-        .map(m => ({
-          id: m.id,
-          image: (m.imageUrl && m.imageUrl !== '') ? m.imageUrl : ModDefault,
-          title: m.name,
-          subtitle: {
-            creator: m.creator.username
-          },
-          cardIcon: ModCardIcon.Download,
-          description: m.description,
-          footer: {
-            guid: m.guid
-          }
-        })))
+      this.modList.push(
+        ...modList
+          // Do not include mods that we already have installed
+          .filter(m => !installedMods.some(im => im.id === m.guid))
+          .map(m => ({
+            id: m.id,
+            image: (m.imageUrl && m.imageUrl !== '') ? m.imageUrl : ModDefault,
+            title: m.name,
+            subtitle: {
+              creator: m.creator.username
+            },
+            cardIcon: ModCardIcon.Download,
+            description: m.description,
+            footer: {
+              guid: m.guid
+            }
+          }))
+      )
       this.busy = false
     }
   }

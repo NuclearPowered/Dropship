@@ -37,7 +37,6 @@ import VModCard from '@/components/VModCard.vue'
 import SkeletonCard from '@/components/SkeletonCard.vue'
 import { ipcRenderer } from 'electron'
 import ModMetadata from '@/electronMain/models/modMetadata'
-import path from 'path'
 import ModDefault from '@/assets/icons/mod_default.png'
 import ExtModMetadata from '@/models/extModViewModel'
 
@@ -45,22 +44,25 @@ import ExtModMetadata from '@/models/extModViewModel'
   components: { VModCard, SkeletonCard }
 })
 export default class InstalledModList extends Vue {
-  loading = true;
-  modList: ExtModMetadata[] = [];
+  loading = true
+  modList: {
+    fileName: string;
+    meta: ExtModMetadata;
+  }[] = []
 
   get modCardList (): ModCard[] {
-    return this.modList.map(m => ({
+    return this.modList.map(({ meta }) => ({
       id: -1,
-      image: (m.imageUrl && m.imageUrl !== '') ? m.imageUrl : ModDefault,
-      title: m.name,
+      image: (meta.imageUrl && meta.imageUrl !== '') ? meta.imageUrl : ModDefault,
+      title: meta.name,
       subtitle: {
-        creator: m.creator
+        creator: meta.creator
       },
       cardIcon: ModCardIcon.Installed,
-      description: m.description,
+      description: meta.description,
       footer: {
-        guid: m.id,
-        currentVersion: m.version
+        guid: meta.id,
+        currentVersion: meta.version
       }
     }))
   }
@@ -72,13 +74,13 @@ export default class InstalledModList extends Vue {
   async created () {
     try {
       await ModListService.startFileWatcher()
-      ipcRenderer.on('file-added', async (event, args: ModMetadata) => {
-        this.modList.push(await ModListService.getInfoForModMetadata(args))
+      ipcRenderer.on('file-added', async (event, args: { fileName: string; metadata: ModMetadata }) => {
+        const meta = await ModListService.getInfoForModMetadata(args.metadata)
+        this.modList.push({ fileName: args.fileName, meta })
         this.loading = false
       })
       ipcRenderer.on('file-removed', (event, fileName: string) => {
-        const trueFileName = path.basename(fileName, '.dll')
-        this.modList = this.modList.filter(m => !trueFileName.includes(m.assemblyName))
+        this.modList = this.modList.filter(m => m.fileName !== fileName)
       })
     } catch (e) {
       console.warn('Could not start file-watcher for instant mod refresh.')

@@ -11,13 +11,15 @@ import ModMetadata from '@/electronMain/models/modMetadata'
 import { DownloadModArgs, RemoveModArgs } from '@/electronMain/models/modArgs'
 import axios from 'axios'
 import chokidar from 'chokidar'
+import normalize from 'normalize-path'
+import escapeGlob from 'glob-escape'
 import ServerArgs from '@/electronMain/models/serverArgs'
 import RegionInfoService from '@/electronMain/regionInfoService'
 import RegionInfo from '@/electronMain/models/regionInfo'
 import AdmZip, { IZipEntry } from 'adm-zip'
 import InstallBepinexArgs from '@/electronMain/models/installBepinexArgs'
 import * as dns from 'dns'
-import globby from 'globby'
+import fg from 'fast-glob'
 import { ELECTRON_APP_ID } from '@/consts'
 import { v4 as uuidv4 } from 'uuid'
 import { BackgroundTask, TaskState, TaskUpdate } from '@/electronMain/models/backgroundTask'
@@ -238,7 +240,8 @@ export default class ElectronMain {
 
   async removeMod (event: IpcMainEvent, { location, guid, version }: RemoveModArgs) {
     try {
-      const modFiles = await globby(path.posix.join(location, 'BepInEx/plugins/**/*.dll'), { noext: true })
+      const globifiedLocation = escapeGlob(normalize(location))
+      const modFiles = await fg(path.posix.join(globifiedLocation, 'BepInEx/plugins/**/*.dll'))
       for (const modFile of modFiles) {
         try {
           const metadata = getModMetadata(modFile)
@@ -261,7 +264,8 @@ export default class ElectronMain {
 
   async refreshMods (location: string): Promise<ModMetadata[]> {
     try {
-      const modFiles = await globby(path.posix.join(location, 'BepInEx/plugins/**/*.dll'), { noext: true })
+      const globifiedLocation = escapeGlob(normalize(location))
+      const modFiles = await fg(path.posix.join(globifiedLocation, 'BepInEx/plugins/**/*.dll'))
       const modMetadata: ModMetadata[] = []
       for (const modFile of modFiles) {
         try {
@@ -295,12 +299,15 @@ export default class ElectronMain {
       if (this.fileWatcher) {
         await this.fileWatcher.close() // Fully dispose of the file watcher instead of just changing watch paths
       }
-      this.fileWatcher = chokidar.watch(path.posix.join(modDir, '**/*.dll'))
+      this.fileWatcher = chokidar.watch(modDir, { disableGlobbing: true })
       this.fileWatcher.on('add', modFile => {
         try {
-          event.reply('file-added', getModMetadata(modFile))
+          event.reply('file-added', {
+            fileName: modFile,
+            metadata: getModMetadata(modFile)
+          })
         } catch (e) {
-          console.warn(`Non mod .dll placed into mod directory (${modFile}). Error: ${e}`)
+          console.warn(`Non mod .dll placed into mod directory (${modFile}). ${e}`)
         }
       })
       this.fileWatcher.on('unlink', modFile => event.reply('file-removed', modFile))
