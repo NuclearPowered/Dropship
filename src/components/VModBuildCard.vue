@@ -24,8 +24,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { ModBuildCard } from '@/models/cardViewModel'
 import VuePopper from 'vue-popperjs'
-import GameVersion, { GamePlatform } from '@/services/gameVersionService'
-import LauncherService from '@/services/launcherService'
+import GameVersion from '@/services/gameVersionService'
 
 @Component({
   components: { VuePopper }

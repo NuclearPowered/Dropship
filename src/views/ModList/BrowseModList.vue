@@ -153,7 +153,6 @@ export default class BrowseModList extends Vue {
     const success = await ModListService.downloadModByUrl(event.footer!.downloadUrl, event.footer!.fileName); // eslint-disable-line
     if (success) {
       this.modList.splice(this.modList.findIndex(m => m.id === event.subtitle.modId), 1)
-      this.$router.push('/modlist')
     }
   }
 }
