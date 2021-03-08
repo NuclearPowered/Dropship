@@ -2,20 +2,18 @@
   <div class="card m-2 h-100" :class="{ clicked }">
     <div class="d-flex p-3 header shadow-lg">
       <img :src="ModCard.image" class="card-img" alt="Mod Image">
-      <div class="d-flex justify-content-between w-100 overflow-hidden">
-        <div class="pl-2">
-          <h3 class="card-title">{{ ModCard.title }}</h3>
-          <h6 class="card-subtitle font-italic">{{ ModCard.subtitle.creator }}</h6>
-        </div>
-        <VuePopper trigger="hover" :options="{placement: 'bottom'}">
-          <div class="popper">
-            {{ popperMsg }}
-          </div>
-          <div slot="reference" class="icon" @click="onClick()">
-            <i class="fas icon" v-if="icon" :class="[icon]"></i>
-          </div>
-        </VuePopper>
+      <div class="mx-2 flex-grow-1 overflow-hidden text-nowrap text-ellipsis">
+        <h4 class="card-title">{{ ModCard.title }}</h4>
+        <h6 class="card-subtitle font-italic">{{ ModCard.subtitle.creator }}</h6>
       </div>
+      <VuePopper trigger="hover" :options="{placement: 'bottom'}">
+        <div class="popper">
+          {{ popperMsg }}
+        </div>
+        <div slot="reference" class="icon" @click="onClick()">
+          <i class="fas icon" v-if="icon" :class="[icon]"></i>
+        </div>
+      </VuePopper>
     </div>
     <div class="card-body">
       <p class="card-text overflow-hidden">{{ ModCard.description }}</p>

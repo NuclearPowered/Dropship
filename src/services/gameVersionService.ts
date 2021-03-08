@@ -35,6 +35,8 @@ export default class GameVersion {
   }
 
   static readonly List: GameVerPlatInfo[] = [
+    GameVersion.versionPlatform(GamePlatform.Steam, 2021, 3, 5),
+    GameVersion.versionPlatform(GamePlatform.Itch, 2021, 3, 5),
     GameVersion.versionPlatform(GamePlatform.Steam, 2020, 12, 9),
     GameVersion.versionPlatform(GamePlatform.Itch, 2020, 11, 17)
   ]
@@ -44,7 +46,8 @@ export default class GameVersion {
       {
         ...prev,
         [curr.name]: curr
-      }), {} as GameVerPlatMap)
+      }
+    ), {} as GameVerPlatMap)
 
   static fromVersionNumber (versionNumber: number): { year: number; month: number; day: number; rev: number } {
     return {

@@ -92,7 +92,7 @@ export default class App extends Vue {
       if (update.state === TaskState.Error || update.state === TaskState.Success) {
         setTimeout(() => {
           this.$store.commit('removeTask', update.uuid)
-        }, 2000)
+        }, 1000)
       }
     })
   }

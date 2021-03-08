@@ -38,7 +38,7 @@ export default class VModBuildCard extends Vue {
   }
 
   get gameVersionPlatform () {
-    const { year, month, day, rev } = GameVersion.fromVersionNumber(this.ModBuildCard.subtitle.gameVersion)
+    const { year, month, day } = GameVersion.fromVersionNumber(this.ModBuildCard.subtitle.gameVersion)
     return GameVersion.verPlatString(this.ModBuildCard.subtitle.gamePlatform, year, month, day)
   }
 }
